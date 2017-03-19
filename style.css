@@ -1,0 +1,22 @@
+/*
+Theme Name: Meeztertom.nl V2
+Theme URI: http://themegrill.com/themes/radiate/
+Description: Meeztertom.nl theme, based on ThemeGrill Radiate theme
+Version: 1.0.0
+Author: Maarten van de Kamp
+Author URI: https://www.maartenvandekamp.nl/
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: radiate
+Template: radiate
+*/
+
+.white-block {
+margin-bottom: 2rem;
+padding: 1.2rem 3rem;
+background-color: white
+}
+
+.widget_wpcom_social_media_icons_widget .genericon {
+font-size: 3em
+}
