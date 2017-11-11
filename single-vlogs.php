@@ -28,7 +28,7 @@ get_header(); ?>
 
 			<?php // In alle overige situaties, geef aan dat er ingelogd moet worden. ?>
 			<?php } else { ?>
-				<?php get_template_part( 'members/content', 'must-login' ); ?>
+				<?php get_template_part( 'members/content', 'login-form' ); ?>
 			<?php } ?>
 
 			<?php radiate_post_nav(); ?>

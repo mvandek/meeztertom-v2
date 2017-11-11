@@ -30,8 +30,8 @@ return $q;
 
 function radiate_post_nav() {
 	// Don't print empty markup if there's nowhere to navigate.
-	$previous = ( is_attachment() ) ? get_post( get_post()->post_parent ) : get_adjacent_post( false, '', true );
-	$next     = get_adjacent_post( false, '', false );
+	$previous = ( is_attachment() ) ? get_post( get_post()->post_parent ) : wpcom_vip_get_adjacent_post( false, '', true );
+	$next     = wpcom_vip_get_adjacent_post( false, '', false );
 
 	if ( ! $next && ! $previous ) {
 		return;
@@ -85,11 +85,134 @@ add_filter( 'pre_comment_user_agent', '__return_empty_string' );
 // Enable the builtin and by default disabled Link manager
 add_filter( 'pre_option_link_manager_enabled', '__return_true' );
 
-function hide_password_field() {
-    if( ! current_user_can( 'create_users' ) ) {
+function meeztertom_hide_password_field() {
+    if( current_user_can( 'create_users' ) ) {
         // hide only for subscribers
+        return true;
+    }
+}
+add_filter( 'show_password_fields', 'meeztertom_hide_password_field' );
+
+/************************************************************************************
+ *				Actions for this theme
+ ************************************************************************************/
+
+function meeztertom_remove_jetpack_page( ) {
+    if ( class_exists( 'Jetpack' ) && !current_user_can( 'manage_options' ) ) {
+        remove_menu_page( 'jetpack' );
+    }
+}
+add_action( 'admin_menu', 'meeztertom_remove_jetpack_page', 999 );
+
+function show_user_info() {
+if ( is_user_logged_in() ) {
+	$current_user = wp_get_current_user();
+	$user_id = get_current_user_id();
+	$birthday = get_user_meta( $user_id, 'birthday',TRUE ); // Pull your value
+	$today = current_time( 'Y-m-d', $gmt = 0 ); // Convert to + seconds since unix epoch
+	if ( $birthday === $today ) { // if date value pulled is today or later, we're overdue
+ 	   $message = '&#127874; Het is jouw verjaardag! &#127874;';
+	} else {
+		$message = '&#128542; Jij bent nog niet jarig... &#128542;';
+	}
+	?>
+		<aside class="widget">
+			<?php echo '<p>Hallo ' . $current_user->display_name . '</p>'; ?>
+			<?php echo '<p>' . esc_html( $message ) . '</p>'; ?>
+			<a href="<?php echo wp_logout_url( home_url() ); ?>">Uitloggen</a>
+		</aside>
+	<?php
+	} // check for logged in user
+}
+add_action( 'before_sidebar', show_user_info );
+
+function my_deregister_styles() {
+   wp_dequeue_style('simple-payments'); 
+}
+add_action( 'wp_print_styles', 'my_deregister_styles', 100 );
+
+// Removes the color picker from the Profiles page
+remove_action( 'admin_color_scheme_picker', 'admin_color_scheme_picker' );
+
+/**
+ * Load VIP-caching Code.
+ */
+require get_stylesheet_directory() . '/vip-caching.php';
+
+/**
+ * The field on the editing screens.
+ *
+ * @param $user WP_User user object
+ */
+function wporg_usermeta_form_field_birthday($user)
+{
+    ?>
+    <h3>Jouw verjaardag</h3>
+    <table class="form-table">
+        <tr>
+            <th>
+                <label for="birthday">Verjaardag</label>
+            </th>
+            <td>
+                <input type="date"
+                       class="regular-text ltr"
+                       id="birthday"
+                       name="birthday"
+                       value="<?= esc_attr(get_user_meta($user->ID, 'birthday', true)); ?>"
+                       title="Please use YYYY-MM-DD as the date format."
+                       pattern="(19[0-9][0-9]|20[0-9][0-9])-(1[0-2]|0[1-9])-(3[01]|[21][0-9]|0[1-9])"
+                       required>
+                <p class="description">
+                    Vul je geboortedatum in.
+                </p>
+            </td>
+        </tr>
+    </table>
+    <?php
+}
+ 
+/**
+ * The save action.
+ *
+ * @param $user_id int the ID of the current user.
+ *
+ * @return bool Meta ID if the key didn't exist, true on successful update, false on failure.
+ */
+function wporg_usermeta_form_field_birthday_update($user_id)
+{
+    // check that the current user have the capability to edit the $user_id
+    if (!current_user_can('edit_user', $user_id)) {
         return false;
     }
-    return true; // for all other users that can edit posts
+ 
+    // create/update user meta for the $user_id
+    return update_user_meta(
+        $user_id,
+        'birthday',
+        $_POST['birthday']
+    );
 }
-add_filter( 'show_password_fields', 'hide_password_field' );
+ 
+// add the field to user's own profile editing screen
+add_action(
+    'edit_user_profile',
+    'wporg_usermeta_form_field_birthday'
+);
+ 
+// add the field to user profile editing screen
+add_action(
+    'show_user_profile',
+    'wporg_usermeta_form_field_birthday'
+);
+ 
+// add the save action to user's own profile editing screen update
+add_action(
+    'personal_options_update',
+    'wporg_usermeta_form_field_birthday_update'
+);
+ 
+// add the save action to user profile editing screen update
+add_action(
+    'edit_user_profile_update',
+    'wporg_usermeta_form_field_birthday_update'
+);

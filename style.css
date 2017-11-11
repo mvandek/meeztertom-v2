@@ -17,6 +17,13 @@ padding: 1.2rem 3rem;
 background-color: white
 }
 
+.comments-area .comment-edit-link,
+.comments-area .comment-permalink,
+.comments-area .comment-date-time,
+.comments-area .comment-author-link {
+margin-left: 0;
+}
+
 .widget_wpcom_social_media_icons_widget .genericon {
 font-size: 3em
 }
