@@ -18,44 +18,44 @@ get_header(); ?>
 
 			<header class="page-header">
 				<h1 class="page-title">
-<?php
+	<?php
 	if ( is_category() ) {
-		$title = sprintf( esc_html__( '%s', 'mvdk' ), single_cat_title( '', false ) );
+		$title = sprintf( esc_html__( '%s', 'radiate' ), single_cat_title( '', false ) );
 	} elseif ( is_tag() ) {
-		$title = sprintf( esc_html__( '%s', 'mvdk' ), single_tag_title( '', false ) );
+		$title = sprintf( esc_html__( '%s', 'radiate' ), single_tag_title( '', false ) );
 	} elseif ( is_author() ) {
-		$title = sprintf( esc_html__( 'Het archief van %s', 'mvdk' ), '<span class="vcard">' . get_the_author() . '</span>' );
+		$title = sprintf( esc_html__( 'Het archief van %s', 'radiate' ), '<span class="vcard">' . get_the_author() . '</span>' );
 	} elseif ( is_year() ) {
-		$title = sprintf( esc_html__( 'Een overzicht van %s', 'mvdk' ), get_the_date( esc_html_x( 'Y', 'yearly archives date format', 'mvdk' ) ) );
+		$title = sprintf( esc_html__( 'Een overzicht van %s', 'radiate' ), get_the_date( esc_html_x( 'Y', 'yearly archives date format', 'radiate' ) ) );
 	} elseif ( is_month() ) {
-		$title = sprintf( esc_html__( 'Een overzicht van %s', 'mvdk' ), get_the_date( esc_html_x( 'F Y', 'monthly archives date format', 'mvdk' ) ) );
+		$title = sprintf( esc_html__( 'Een overzicht van %s', 'radiate' ), get_the_date( esc_html_x( 'F Y', 'monthly archives date format', 'radiate' ) ) );
 	} elseif ( is_day() ) {
-		$title = sprintf( esc_html__( 'Alle posts op %s', 'mvdk' ), get_the_date( esc_html_x( 'F j, Y', 'daily archives date format', 'mvdk' ) ) );
+		$title = sprintf( esc_html__( 'Alle posts op %s', 'radiate' ), get_the_date( esc_html_x( 'F j, Y', 'daily archives date format', 'radiate' ) ) );
 	} elseif ( is_tax( 'post_format' ) ) {
 		if ( is_tax( 'post_format', 'post-format-aside' ) ) {
-			$title = esc_html_x( 'Asides', 'post format archive title', 'mvdk' );
+			$title = esc_html_x( 'Asides', 'post format archive title', 'radiate' );
 		} elseif ( is_tax( 'post_format', 'post-format-gallery' ) ) {
-			$title = esc_html_x( 'Galleries', 'post format archive title', 'mvdk' );
+			$title = esc_html_x( 'Galleries', 'post format archive title', 'radiate' );
 		} elseif ( is_tax( 'post_format', 'post-format-image' ) ) {
-			$title = esc_html_x( 'Afbeeldingen', 'post format archive title', 'mvdk' );
+			$title = esc_html_x( 'Images', 'post format archive title', 'radiate' );
 		} elseif ( is_tax( 'post_format', 'post-format-link' ) ) {
-			$title = esc_html_x( 'Links', 'post format archive title', 'mvdk' );
+			$title = esc_html_x( 'Links', 'post format archive title', 'radiate' );
 		}
 	} elseif ( is_post_type_archive() ) {
-		$title = sprintf( esc_html__( '%s', 'mvdk' ), post_type_archive_title( '', false ) );
+		$title = sprintf( esc_html__( '%s', 'radiate' ), post_type_archive_title( '', false ) );
 	} elseif ( is_tax() ) {
 		$tax = get_taxonomy( get_queried_object()->taxonomy );
 		/* translators: 1: Taxonomy singular name, 2: Current taxonomy term */
-		$title = sprintf( esc_html__( '%1$s: %2$s', 'mvdk' ), $tax->labels->singular_name, single_term_title( '', false ) );
+		$title = sprintf( esc_html__( '%1$s: %2$s', 'radiate' ), $tax->labels->singular_name, single_term_title( '', false ) );
 	} else {
-		$title = esc_html__( 'Archief', 'mvdk' );
+		$title = esc_html__( 'Archives', 'radiate' );
 	}
 
 if ( ! empty( $title ) ) {
 		echo $title;
 	}
-
-?>
+	?>
+				</h1>
 				<?php
 					// Show an optional term description.
 					$term_description = term_description();

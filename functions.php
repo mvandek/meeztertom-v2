@@ -10,6 +10,12 @@ wp_enqueue_style( 'radiate-style', get_template_directory_uri().'/style.css' );
 // Load our main stylesheet.
 wp_enqueue_style( 'meeztertom-v2-style', get_stylesheet_directory_uri().'/style.css', array( 'radiate-style' ), '20170104' );
 }
+
+// Device Pixels support
+// This improves the resolution of gravatars and wordpress.com uploads on hi-res and zoomed browsers. We only have gravatars so we should be ok without it.
+wp_deregister_script('devicepx');
+wp_dequeue_script('devicepx');
+
 add_action( 'wp_enqueue_scripts', 'meeztertom_v2_style' );
 
 /**
@@ -23,6 +29,7 @@ set_query_var( 'post_type', [
 'post',
 'vlogs',
 'oefenmateriaal',
+'faq',
 ] );
 return $q;
 }
@@ -108,18 +115,18 @@ function show_user_info() {
 if ( is_user_logged_in() ) {
 	$current_user = wp_get_current_user();
 	$user_id = get_current_user_id();
-	$birthday = get_user_meta( $user_id, 'birthday',TRUE ); // Pull your value
+	$birthday = get_user_meta( $user_id, 'birthday', TRUE ); // Pull your value
 	$today = current_time( 'Y-m-d', $gmt = 0 ); // Convert to + seconds since unix epoch
-	if ( $birthday === $today ) { // if date value pulled is today or later, we're overdue
- 	   $message = '&#127874; Het is jouw verjaardag! &#127874;';
+	if ( $birthday === $today ) { // if date value pulled is today, it's our birthday
+ 	   $message = 'Het is jouw verjaardag! &#127874;';
 	} else {
-		$message = '&#128542; Jij bent nog niet jarig... &#128542;';
+		$message = 'Jij bent nog niet jarig... &#128542;';
 	}
 	?>
 		<aside class="widget">
-			<?php echo '<p>Hallo ' . $current_user->display_name . '</p>'; ?>
-			<?php echo '<p>' . esc_html( $message ) . '</p>'; ?>
-			<a href="<?php echo wp_logout_url( home_url() ); ?>">Uitloggen</a>
+			<?= '<p>Hallo ' . $current_user->display_name . '</p>'; ?>
+			<?= '<p>' . esc_html( $message ) . '</p>'; ?>
+			<a href="<?= wp_logout_url( home_url() ); ?>">Uitloggen</a>
 		</aside>
 	<?php
 	} // check for logged in user
@@ -147,7 +154,7 @@ require get_stylesheet_directory() . '/vip-caching.php';
 function wporg_usermeta_form_field_birthday($user)
 {
     ?>
-    <h3>Jouw verjaardag</h3>
+    <h3>De verjaardag van...</h3>
     <table class="form-table">
         <tr>
             <th>
@@ -162,13 +169,11 @@ function wporg_usermeta_form_field_birthday($user)
                        title="Please use YYYY-MM-DD as the date format."
                        pattern="(19[0-9][0-9]|20[0-9][0-9])-(1[0-2]|0[1-9])-(3[01]|[21][0-9]|0[1-9])"
                        required>
-                <p class="description">
-                    Vul je geboortedatum in.
-                </p>
-            </td>
+				<p class="description">Vul de datum in waarop deze leerling in het huidige schooljaar jarig is.</p>
+			</td>
         </tr>
-    </table>
-    <?php
+	</table>
+<?php
 }
  
 /**
